@@ -1,0 +1,689 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="DiscoveryHunt_DBModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Questions">
+          <Key>
+            <PropertyRef Name="QuestionId" />
+          </Key>
+          <Property Name="QuestionId" Type="int" Nullable="false" />
+          <Property Name="QuestionName" Type="varchar" MaxLength="50" />
+          <Property Name="OptionA" Type="varchar" MaxLength="50" />
+          <Property Name="OptionB" Type="varchar" MaxLength="50" />
+          <Property Name="OptionC" Type="varchar" MaxLength="50" />
+          <Property Name="OptionD" Type="varchar" MaxLength="50" />
+          <Property Name="CorrectAnswer" Type="varchar" MaxLength="50" />
+          <Property Name="IsDeleted" Type="int" />
+        </EntityType>
+        <EntityType Name="Transaction">
+          <Key>
+            <PropertyRef Name="transactionId" />
+          </Key>
+          <Property Name="transactionId" Type="int" Nullable="false" />
+          <Property Name="UserId" Type="bigint" Nullable="false" />
+          <Property Name="TrialId" Type="int" Nullable="false" />
+          <Property Name="Amount" Type="int" />
+          <Property Name="CreatedDate" Type="datetime" />
+          <Property Name="PaymentStatus" Type="int" />
+        </EntityType>
+        <EntityType Name="Trial">
+          <Key>
+            <PropertyRef Name="TrialId" />
+          </Key>
+          <Property Name="TrialId" Type="int" Nullable="false" />
+          <Property Name="Country" Type="varchar" MaxLength="50" />
+          <Property Name="City" Type="varchar" MaxLength="50" />
+          <Property Name="CreatedDate" Type="datetime" />
+          <Property Name="UpdatedDate" Type="datetime" />
+        </EntityType>
+        <EntityType Name="User">
+          <Key>
+            <PropertyRef Name="UserId" />
+          </Key>
+          <Property Name="UserId" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Username" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="Email" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="Password" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="PasswordSalt" Type="nvarchar(max)" />
+          <Property Name="CreatedDate" Type="datetime" Nullable="false" />
+          <Property Name="UpdatedDate" Type="datetime" />
+        </EntityType>
+        <EntityType Name="UserProfile">
+          <Key>
+            <PropertyRef Name="UserId" />
+          </Key>
+          <Property Name="UserId" Type="bigint" Nullable="false" />
+          <Property Name="ProfilePictureUrl" Type="nvarchar" MaxLength="100" />
+          <Property Name="FirstName" Type="varchar" MaxLength="50" />
+          <Property Name="LastName" Type="varchar" MaxLength="50" />
+          <Property Name="Mobile" Type="int" />
+          <Property Name="Tokens" Type="varchar" MaxLength="50" />
+          <Property Name="UpdatedDate" Type="datetime" />
+        </EntityType>
+        <EntityType Name="UsersResult">
+          <Key>
+            <PropertyRef Name="ResultId" />
+          </Key>
+          <Property Name="ResultId" Type="int" Nullable="false" />
+          <Property Name="QuestionAttempt" Type="int" />
+          <Property Name="QuestionId" Type="int" Nullable="false" />
+          <Property Name="UserId" Type="bigint" Nullable="false" />
+          <Property Name="TrialId" Type="int" Nullable="false" />
+          <Property Name="AnswerStatus" Type="int" />
+        </EntityType>
+        <EntityType Name="UserTrialStatus">
+          <Key>
+            <PropertyRef Name="UserTrialStatusId" />
+          </Key>
+          <Property Name="UserTrialStatusId" Type="int" Nullable="false" />
+          <Property Name="TrialId" Type="int" Nullable="false" />
+          <Property Name="UserId" Type="bigint" Nullable="false" />
+          <Property Name="ProgressLevel" Type="decimal" Precision="18" Scale="0" />
+          <Property Name="WaterLevel" Type="decimal" Precision="18" Scale="0" />
+          <Property Name="StartTime" Type="time" Precision="7" />
+          <Property Name="EndTime" Type="time" Precision="7" />
+          <Property Name="PauseTime" Type="time" Precision="7" />
+          <Property Name="Penalty" Type="time" Precision="7" />
+        </EntityType>
+        <Association Name="FK_Transaction_Trial">
+          <End Role="Trial" Type="Self.Trial" Multiplicity="1" />
+          <End Role="Transaction" Type="Self.Transaction" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Trial">
+              <PropertyRef Name="TrialId" />
+            </Principal>
+            <Dependent Role="Transaction">
+              <PropertyRef Name="TrialId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Transaction_Trial1">
+          <End Role="Trial" Type="Self.Trial" Multiplicity="1" />
+          <End Role="Transaction" Type="Self.Transaction" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Trial">
+              <PropertyRef Name="TrialId" />
+            </Principal>
+            <Dependent Role="Transaction">
+              <PropertyRef Name="TrialId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Transaction_UserProfile">
+          <End Role="UserProfile" Type="Self.UserProfile" Multiplicity="1" />
+          <End Role="Transaction" Type="Self.Transaction" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="UserProfile">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="Transaction">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_UserProfile_User">
+          <End Role="User" Type="Self.User" Multiplicity="1" />
+          <End Role="UserProfile" Type="Self.UserProfile" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="UserProfile">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_UsersResult_Questions">
+          <End Role="Questions" Type="Self.Questions" Multiplicity="1" />
+          <End Role="UsersResult" Type="Self.UsersResult" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Questions">
+              <PropertyRef Name="QuestionId" />
+            </Principal>
+            <Dependent Role="UsersResult">
+              <PropertyRef Name="QuestionId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_UsersResult_Trial">
+          <End Role="Trial" Type="Self.Trial" Multiplicity="1" />
+          <End Role="UsersResult" Type="Self.UsersResult" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Trial">
+              <PropertyRef Name="TrialId" />
+            </Principal>
+            <Dependent Role="UsersResult">
+              <PropertyRef Name="TrialId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_UsersResult_Trial1">
+          <End Role="Trial" Type="Self.Trial" Multiplicity="1" />
+          <End Role="UsersResult" Type="Self.UsersResult" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Trial">
+              <PropertyRef Name="TrialId" />
+            </Principal>
+            <Dependent Role="UsersResult">
+              <PropertyRef Name="TrialId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_UsersResult_User">
+          <End Role="User" Type="Self.User" Multiplicity="1" />
+          <End Role="UsersResult" Type="Self.UsersResult" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="UsersResult">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_UsersResult_UserProfile">
+          <End Role="UserProfile" Type="Self.UserProfile" Multiplicity="1" />
+          <End Role="UsersResult" Type="Self.UsersResult" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="UserProfile">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="UsersResult">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_UserTrialStatus_UserProfile">
+          <End Role="UserProfile" Type="Self.UserProfile" Multiplicity="1" />
+          <End Role="UserTrialStatus" Type="Self.UserTrialStatus" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="UserProfile">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="UserTrialStatus">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_UserTrialStatus_UserTrialStatus">
+          <End Role="Trial" Type="Self.Trial" Multiplicity="1" />
+          <End Role="UserTrialStatus" Type="Self.UserTrialStatus" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Trial">
+              <PropertyRef Name="TrialId" />
+            </Principal>
+            <Dependent Role="UserTrialStatus">
+              <PropertyRef Name="TrialId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="DiscoveryHunt_DBModelStoreContainer">
+          <EntitySet Name="Questions" EntityType="Self.Questions" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Transaction" EntityType="Self.Transaction" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Trial" EntityType="Self.Trial" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="User" EntityType="Self.User" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="UserProfile" EntityType="Self.UserProfile" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="UsersResult" EntityType="Self.UsersResult" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="UserTrialStatus" EntityType="Self.UserTrialStatus" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_Transaction_Trial" Association="Self.FK_Transaction_Trial">
+            <End Role="Trial" EntitySet="Trial" />
+            <End Role="Transaction" EntitySet="Transaction" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Transaction_Trial1" Association="Self.FK_Transaction_Trial1">
+            <End Role="Trial" EntitySet="Trial" />
+            <End Role="Transaction" EntitySet="Transaction" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Transaction_UserProfile" Association="Self.FK_Transaction_UserProfile">
+            <End Role="UserProfile" EntitySet="UserProfile" />
+            <End Role="Transaction" EntitySet="Transaction" />
+          </AssociationSet>
+          <AssociationSet Name="FK_UserProfile_User" Association="Self.FK_UserProfile_User">
+            <End Role="User" EntitySet="User" />
+            <End Role="UserProfile" EntitySet="UserProfile" />
+          </AssociationSet>
+          <AssociationSet Name="FK_UsersResult_Questions" Association="Self.FK_UsersResult_Questions">
+            <End Role="Questions" EntitySet="Questions" />
+            <End Role="UsersResult" EntitySet="UsersResult" />
+          </AssociationSet>
+          <AssociationSet Name="FK_UsersResult_Trial" Association="Self.FK_UsersResult_Trial">
+            <End Role="Trial" EntitySet="Trial" />
+            <End Role="UsersResult" EntitySet="UsersResult" />
+          </AssociationSet>
+          <AssociationSet Name="FK_UsersResult_Trial1" Association="Self.FK_UsersResult_Trial1">
+            <End Role="Trial" EntitySet="Trial" />
+            <End Role="UsersResult" EntitySet="UsersResult" />
+          </AssociationSet>
+          <AssociationSet Name="FK_UsersResult_User" Association="Self.FK_UsersResult_User">
+            <End Role="User" EntitySet="User" />
+            <End Role="UsersResult" EntitySet="UsersResult" />
+          </AssociationSet>
+          <AssociationSet Name="FK_UsersResult_UserProfile" Association="Self.FK_UsersResult_UserProfile">
+            <End Role="UserProfile" EntitySet="UserProfile" />
+            <End Role="UsersResult" EntitySet="UsersResult" />
+          </AssociationSet>
+          <AssociationSet Name="FK_UserTrialStatus_UserProfile" Association="Self.FK_UserTrialStatus_UserProfile">
+            <End Role="UserProfile" EntitySet="UserProfile" />
+            <End Role="UserTrialStatus" EntitySet="UserTrialStatus" />
+          </AssociationSet>
+          <AssociationSet Name="FK_UserTrialStatus_UserTrialStatus" Association="Self.FK_UserTrialStatus_UserTrialStatus">
+            <End Role="Trial" EntitySet="Trial" />
+            <End Role="UserTrialStatus" EntitySet="UserTrialStatus" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="DiscoveryHunt_DBModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="Transaction">
+          <Key>
+            <PropertyRef Name="transactionId" />
+          </Key>
+          <Property Name="transactionId" Type="Int32" Nullable="false" />
+          <Property Name="UserId" Type="Int32" Nullable="false" />
+          <Property Name="TrialId" Type="Int32" Nullable="false" />
+          <Property Name="Amount" Type="Int32" />
+          <Property Name="CreatedDate" Type="DateTime" Precision="3" />
+          <Property Name="PaymentStatus" Type="Int32" />
+          <NavigationProperty Name="Trial" Relationship="Self.FK_Transaction_Trial" FromRole="Transaction" ToRole="Trial" />
+          <NavigationProperty Name="Trial1" Relationship="Self.FK_Transaction_Trial1" FromRole="Transaction" ToRole="Trial" />
+          <NavigationProperty Name="UserProfile" Relationship="DiscoveryHunt_DBModel.FK_Transaction_UserProfile" FromRole="Transaction" ToRole="UserProfile" />
+        </EntityType>
+        <EntityType Name="Trial">
+          <Key>
+            <PropertyRef Name="TrialId" />
+          </Key>
+          <Property Name="TrialId" Type="Int32" Nullable="false" />
+          <Property Name="Country" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="City" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="CreatedDate" Type="DateTime" Precision="3" />
+          <Property Name="UpdatedDate" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="Transactions" Relationship="Self.FK_Transaction_Trial" FromRole="Trial" ToRole="Transaction" />
+          <NavigationProperty Name="Transactions1" Relationship="Self.FK_Transaction_Trial1" FromRole="Trial" ToRole="Transaction" />
+          <NavigationProperty Name="UsersResults" Relationship="Self.FK_UsersResult_Trial" FromRole="Trial" ToRole="UsersResult" />
+          <NavigationProperty Name="UsersResults1" Relationship="Self.FK_UsersResult_Trial1" FromRole="Trial" ToRole="UsersResult" />
+          <NavigationProperty Name="UserTrialStatus" Relationship="Self.FK_UserTrialStatus_UserTrialStatus" FromRole="Trial" ToRole="UserTrialStatus" />
+        </EntityType>
+        <EntityType Name="User">
+          <Key>
+            <PropertyRef Name="UserId" />
+          </Key>
+          <Property Name="UserId" Type="Int32" Nullable="false" />
+          <Property Name="Username" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Email" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Password" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="CreatedDate" Type="DateTime" Precision="3" Nullable="false" />
+          <Property Name="UpdatedDate" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="UsersResults" Relationship="Self.FK_UsersResult_User" FromRole="User" ToRole="UsersResult" />
+          <NavigationProperty Name="UserProfile" Relationship="DiscoveryHunt_DBModel.FK_UserProfile_User" FromRole="User" ToRole="UserProfile" />
+          <Property Name="PasswordSalt" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="UsersResult">
+          <Key>
+            <PropertyRef Name="ResultId" />
+          </Key>
+          <Property Name="ResultId" Type="Int32" Nullable="false" />
+          <Property Name="QuestionAttempt" Type="Int32" />
+          <Property Name="QuestionId" Type="Int32" Nullable="false" />
+          <Property Name="UserId" Type="Int32" Nullable="false" />
+          <Property Name="TrialId" Type="Int32" Nullable="false" />
+          <Property Name="AnswerStatus" Type="Int32" />
+          <NavigationProperty Name="Trial" Relationship="Self.FK_UsersResult_Trial" FromRole="UsersResult" ToRole="Trial" />
+          <NavigationProperty Name="Trial1" Relationship="Self.FK_UsersResult_Trial1" FromRole="UsersResult" ToRole="Trial" />
+          <NavigationProperty Name="User" Relationship="Self.FK_UsersResult_User" FromRole="UsersResult" ToRole="User" />
+          <NavigationProperty Name="UserProfile" Relationship="DiscoveryHunt_DBModel.FK_UsersResult_UserProfile" FromRole="UsersResult" ToRole="UserProfile" />
+          <NavigationProperty Name="Question" Relationship="DiscoveryHunt_DBModel.FK_UsersResult_Questions" FromRole="UsersResult" ToRole="Question" />
+        </EntityType>
+        <EntityType Name="UserTrialStatu">
+          <Key>
+            <PropertyRef Name="UserTrialStatusId" />
+          </Key>
+          <Property Name="UserTrialStatusId" Type="Int32" Nullable="false" />
+          <Property Name="TrialId" Type="Int32" Nullable="false" />
+          <Property Name="UserId" Type="Int32" Nullable="false" />
+          <Property Name="ProgressLevel" Type="Decimal" Precision="18" Scale="0" />
+          <Property Name="WaterLevel" Type="Decimal" Precision="18" Scale="0" />
+          <Property Name="StartTime" Type="Time" Precision="7" />
+          <Property Name="EndTime" Type="Time" Precision="7" />
+          <Property Name="PauseTime" Type="Time" Precision="7" />
+          <Property Name="Penalty" Type="Time" Precision="7" />
+          <NavigationProperty Name="Trial" Relationship="Self.FK_UserTrialStatus_UserTrialStatus" FromRole="UserTrialStatus" ToRole="Trial" />
+          <NavigationProperty Name="UserProfile" Relationship="DiscoveryHunt_DBModel.FK_UserTrialStatus_UserProfile" FromRole="UserTrialStatu" ToRole="UserProfile" />
+        </EntityType>
+        <Association Name="FK_Transaction_Trial">
+          <End Role="Trial" Type="Self.Trial" Multiplicity="1" />
+          <End Role="Transaction" Type="Self.Transaction" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Trial">
+              <PropertyRef Name="TrialId" />
+            </Principal>
+            <Dependent Role="Transaction">
+              <PropertyRef Name="TrialId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Transaction_Trial1">
+          <End Role="Trial" Type="Self.Trial" Multiplicity="1" />
+          <End Role="Transaction" Type="Self.Transaction" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Trial">
+              <PropertyRef Name="TrialId" />
+            </Principal>
+            <Dependent Role="Transaction">
+              <PropertyRef Name="TrialId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_UsersResult_Trial">
+          <End Role="Trial" Type="Self.Trial" Multiplicity="1" />
+          <End Role="UsersResult" Type="Self.UsersResult" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Trial">
+              <PropertyRef Name="TrialId" />
+            </Principal>
+            <Dependent Role="UsersResult">
+              <PropertyRef Name="TrialId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_UsersResult_Trial1">
+          <End Role="Trial" Type="Self.Trial" Multiplicity="1" />
+          <End Role="UsersResult" Type="Self.UsersResult" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Trial">
+              <PropertyRef Name="TrialId" />
+            </Principal>
+            <Dependent Role="UsersResult">
+              <PropertyRef Name="TrialId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_UserTrialStatus_UserTrialStatus">
+          <End Role="Trial" Type="Self.Trial" Multiplicity="1" />
+          <End Role="UserTrialStatus" Type="Self.UserTrialStatu" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Trial">
+              <PropertyRef Name="TrialId" />
+            </Principal>
+            <Dependent Role="UserTrialStatus">
+              <PropertyRef Name="TrialId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_UsersResult_User">
+          <End Role="User" Type="Self.User" Multiplicity="1" />
+          <End Role="UsersResult" Type="Self.UsersResult" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="UsersResult">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="DiscoveryHunt_DBEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Transactions" EntityType="Self.Transaction" />
+          <EntitySet Name="Trials" EntityType="Self.Trial" />
+          <EntitySet Name="Users" EntityType="Self.User" />
+          <EntitySet Name="UsersResults" EntityType="Self.UsersResult" />
+          <EntitySet Name="UserTrialStatus" EntityType="Self.UserTrialStatu" />
+          <AssociationSet Name="FK_Transaction_Trial" Association="Self.FK_Transaction_Trial">
+            <End Role="Trial" EntitySet="Trials" />
+            <End Role="Transaction" EntitySet="Transactions" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Transaction_Trial1" Association="Self.FK_Transaction_Trial1">
+            <End Role="Trial" EntitySet="Trials" />
+            <End Role="Transaction" EntitySet="Transactions" />
+          </AssociationSet>
+          <AssociationSet Name="FK_UsersResult_Trial" Association="Self.FK_UsersResult_Trial">
+            <End Role="Trial" EntitySet="Trials" />
+            <End Role="UsersResult" EntitySet="UsersResults" />
+          </AssociationSet>
+          <AssociationSet Name="FK_UsersResult_Trial1" Association="Self.FK_UsersResult_Trial1">
+            <End Role="Trial" EntitySet="Trials" />
+            <End Role="UsersResult" EntitySet="UsersResults" />
+          </AssociationSet>
+          <AssociationSet Name="FK_UserTrialStatus_UserTrialStatus" Association="Self.FK_UserTrialStatus_UserTrialStatus">
+            <End Role="Trial" EntitySet="Trials" />
+            <End Role="UserTrialStatus" EntitySet="UserTrialStatus" />
+          </AssociationSet>
+          <AssociationSet Name="FK_UsersResult_User" Association="Self.FK_UsersResult_User">
+            <End Role="User" EntitySet="Users" />
+            <End Role="UsersResult" EntitySet="UsersResults" />
+          </AssociationSet>
+          <EntitySet Name="UserProfiles" EntityType="DiscoveryHunt_DBModel.UserProfile" />
+          <AssociationSet Name="FK_Transaction_UserProfile" Association="DiscoveryHunt_DBModel.FK_Transaction_UserProfile">
+            <End Role="UserProfile" EntitySet="UserProfiles" />
+            <End Role="Transaction" EntitySet="Transactions" />
+          </AssociationSet>
+          <AssociationSet Name="FK_UserProfile_User" Association="DiscoveryHunt_DBModel.FK_UserProfile_User">
+            <End Role="User" EntitySet="Users" />
+            <End Role="UserProfile" EntitySet="UserProfiles" />
+          </AssociationSet>
+          <AssociationSet Name="FK_UsersResult_UserProfile" Association="DiscoveryHunt_DBModel.FK_UsersResult_UserProfile">
+            <End Role="UserProfile" EntitySet="UserProfiles" />
+            <End Role="UsersResult" EntitySet="UsersResults" />
+          </AssociationSet>
+          <AssociationSet Name="FK_UserTrialStatus_UserProfile" Association="DiscoveryHunt_DBModel.FK_UserTrialStatus_UserProfile">
+            <End Role="UserProfile" EntitySet="UserProfiles" />
+            <End Role="UserTrialStatu" EntitySet="UserTrialStatus" />
+          </AssociationSet>
+          <EntitySet Name="Questions" EntityType="DiscoveryHunt_DBModel.Question" />
+          <AssociationSet Name="FK_UsersResult_Questions" Association="DiscoveryHunt_DBModel.FK_UsersResult_Questions">
+            <End Role="Question" EntitySet="Questions" />
+            <End Role="UsersResult" EntitySet="UsersResults" />
+          </AssociationSet>
+          </EntityContainer>
+        <EntityType Name="UserProfile">
+          <Key>
+            <PropertyRef Name="UserId" />
+          </Key>
+          <Property Name="UserId" Type="Int32" Nullable="false" />
+          <Property Name="ProfilePictureUrl" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="FirstName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="LastName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Mobile" Type="Int32" />
+          <Property Name="Tokens" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="UpdatedDate" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="Transactions" Relationship="DiscoveryHunt_DBModel.FK_Transaction_UserProfile" FromRole="UserProfile" ToRole="Transaction" />
+          <NavigationProperty Name="User" Relationship="DiscoveryHunt_DBModel.FK_UserProfile_User" FromRole="UserProfile" ToRole="User" />
+          <NavigationProperty Name="UsersResults" Relationship="DiscoveryHunt_DBModel.FK_UsersResult_UserProfile" FromRole="UserProfile" ToRole="UsersResult" />
+          <NavigationProperty Name="UserTrialStatus" Relationship="DiscoveryHunt_DBModel.FK_UserTrialStatus_UserProfile" FromRole="UserProfile" ToRole="UserTrialStatu" />
+        </EntityType>
+        <Association Name="FK_Transaction_UserProfile">
+          <End Type="DiscoveryHunt_DBModel.UserProfile" Role="UserProfile" Multiplicity="1" />
+          <End Type="DiscoveryHunt_DBModel.Transaction" Role="Transaction" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="UserProfile">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="Transaction">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_UserProfile_User">
+          <End Type="DiscoveryHunt_DBModel.User" Role="User" Multiplicity="1" />
+          <End Type="DiscoveryHunt_DBModel.UserProfile" Role="UserProfile" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="UserProfile">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_UsersResult_UserProfile">
+          <End Type="DiscoveryHunt_DBModel.UserProfile" Role="UserProfile" Multiplicity="1" />
+          <End Type="DiscoveryHunt_DBModel.UsersResult" Role="UsersResult" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="UserProfile">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="UsersResult">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_UserTrialStatus_UserProfile">
+          <End Type="DiscoveryHunt_DBModel.UserProfile" Role="UserProfile" Multiplicity="1" />
+          <End Type="DiscoveryHunt_DBModel.UserTrialStatu" Role="UserTrialStatu" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="UserProfile">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="UserTrialStatu">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="Question">
+          <Key>
+            <PropertyRef Name="QuestionId" />
+          </Key>
+          <Property Name="QuestionId" Type="Int32" Nullable="false" />
+          <Property Name="QuestionName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="OptionA" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="OptionB" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="OptionC" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="OptionD" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="CorrectAnswer" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="IsDeleted" Type="Int32" />
+          <NavigationProperty Name="UsersResults" Relationship="DiscoveryHunt_DBModel.FK_UsersResult_Questions" FromRole="Question" ToRole="UsersResult" />
+        </EntityType>
+        <Association Name="FK_UsersResult_Questions">
+          <End Type="DiscoveryHunt_DBModel.Question" Role="Question" Multiplicity="1" />
+          <End Type="DiscoveryHunt_DBModel.UsersResult" Role="UsersResult" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Question">
+              <PropertyRef Name="QuestionId" />
+            </Principal>
+            <Dependent Role="UsersResult">
+              <PropertyRef Name="QuestionId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="DiscoveryHunt_DBModelStoreContainer" CdmEntityContainer="DiscoveryHunt_DBEntities">
+          <EntitySetMapping Name="Transactions">
+            <EntityTypeMapping TypeName="DiscoveryHunt_DBModel.Transaction">
+              <MappingFragment StoreEntitySet="Transaction">
+                <ScalarProperty Name="transactionId" ColumnName="transactionId" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="TrialId" ColumnName="TrialId" />
+                <ScalarProperty Name="Amount" ColumnName="Amount" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="PaymentStatus" ColumnName="PaymentStatus" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Trials">
+            <EntityTypeMapping TypeName="DiscoveryHunt_DBModel.Trial">
+              <MappingFragment StoreEntitySet="Trial">
+                <ScalarProperty Name="TrialId" ColumnName="TrialId" />
+                <ScalarProperty Name="Country" ColumnName="Country" />
+                <ScalarProperty Name="City" ColumnName="City" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="UpdatedDate" ColumnName="UpdatedDate" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Users">
+            <EntityTypeMapping TypeName="DiscoveryHunt_DBModel.User">
+              <MappingFragment StoreEntitySet="User">
+                <ScalarProperty Name="PasswordSalt" ColumnName="PasswordSalt" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="Username" ColumnName="Username" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="Password" ColumnName="Password" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="UpdatedDate" ColumnName="UpdatedDate" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="UsersResults">
+            <EntityTypeMapping TypeName="DiscoveryHunt_DBModel.UsersResult">
+              <MappingFragment StoreEntitySet="UsersResult">
+                <ScalarProperty Name="ResultId" ColumnName="ResultId" />
+                <ScalarProperty Name="QuestionAttempt" ColumnName="QuestionAttempt" />
+                <ScalarProperty Name="QuestionId" ColumnName="QuestionId" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="TrialId" ColumnName="TrialId" />
+                <ScalarProperty Name="AnswerStatus" ColumnName="AnswerStatus" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="UserTrialStatus">
+            <EntityTypeMapping TypeName="DiscoveryHunt_DBModel.UserTrialStatu">
+              <MappingFragment StoreEntitySet="UserTrialStatus">
+                <ScalarProperty Name="UserTrialStatusId" ColumnName="UserTrialStatusId" />
+                <ScalarProperty Name="TrialId" ColumnName="TrialId" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="ProgressLevel" ColumnName="ProgressLevel" />
+                <ScalarProperty Name="WaterLevel" ColumnName="WaterLevel" />
+                <ScalarProperty Name="StartTime" ColumnName="StartTime" />
+                <ScalarProperty Name="EndTime" ColumnName="EndTime" />
+                <ScalarProperty Name="PauseTime" ColumnName="PauseTime" />
+                <ScalarProperty Name="Penalty" ColumnName="Penalty" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="UserProfiles">
+            <EntityTypeMapping TypeName="DiscoveryHunt_DBModel.UserProfile">
+              <MappingFragment StoreEntitySet="UserProfile">
+                <ScalarProperty Name="UpdatedDate" ColumnName="UpdatedDate" />
+                <ScalarProperty Name="Tokens" ColumnName="Tokens" />
+                <ScalarProperty Name="Mobile" ColumnName="Mobile" />
+                <ScalarProperty Name="LastName" ColumnName="LastName" />
+                <ScalarProperty Name="FirstName" ColumnName="FirstName" />
+                <ScalarProperty Name="ProfilePictureUrl" ColumnName="ProfilePictureUrl" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Questions">
+            <EntityTypeMapping TypeName="DiscoveryHunt_DBModel.Question">
+              <MappingFragment StoreEntitySet="Questions">
+                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
+                <ScalarProperty Name="CorrectAnswer" ColumnName="CorrectAnswer" />
+                <ScalarProperty Name="OptionD" ColumnName="OptionD" />
+                <ScalarProperty Name="OptionC" ColumnName="OptionC" />
+                <ScalarProperty Name="OptionB" ColumnName="OptionB" />
+                <ScalarProperty Name="OptionA" ColumnName="OptionA" />
+                <ScalarProperty Name="QuestionName" ColumnName="QuestionName" />
+                <ScalarProperty Name="QuestionId" ColumnName="QuestionId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

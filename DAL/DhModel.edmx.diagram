@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="e2512dc59e6446f0b58154f66abb3795" Name="Diagram1">
+        <EntityTypeShape EntityType="DiscoveryHunt_DBModel.Transaction" Width="1.5" PointX="3" PointY="5.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="DiscoveryHunt_DBModel.Trial" Width="1.5" PointX="0.75" PointY="5.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="DiscoveryHunt_DBModel.User" Width="1.5" PointX="1.5" PointY="9.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="DiscoveryHunt_DBModel.UsersResult" Width="1.5" PointX="6" PointY="5" IsExpanded="true" />
+        <EntityTypeShape EntityType="DiscoveryHunt_DBModel.UserTrialStatu" Width="1.5" PointX="3" PointY="1" IsExpanded="true" />
+        <AssociationConnector Association="DiscoveryHunt_DBModel.FK_Transaction_Trial" ManuallyRouted="false" />
+        <AssociationConnector Association="DiscoveryHunt_DBModel.FK_Transaction_Trial1" ManuallyRouted="false" />
+        <AssociationConnector Association="DiscoveryHunt_DBModel.FK_UsersResult_Trial" ManuallyRouted="false" />
+        <AssociationConnector Association="DiscoveryHunt_DBModel.FK_UsersResult_Trial1" ManuallyRouted="false" />
+        <AssociationConnector Association="DiscoveryHunt_DBModel.FK_UserTrialStatus_UserTrialStatus" ManuallyRouted="false" />
+        <AssociationConnector Association="DiscoveryHunt_DBModel.FK_UsersResult_User" ManuallyRouted="false" />
+        <EntityTypeShape EntityType="DiscoveryHunt_DBModel.UserProfile" Width="1.5" PointX="3.75" PointY="13.125" />
+        <AssociationConnector Association="DiscoveryHunt_DBModel.FK_Transaction_UserProfile" />
+        <AssociationConnector Association="DiscoveryHunt_DBModel.FK_UserProfile_User" />
+        <AssociationConnector Association="DiscoveryHunt_DBModel.FK_UsersResult_UserProfile" />
+        <AssociationConnector Association="DiscoveryHunt_DBModel.FK_UserTrialStatus_UserProfile" />
+        <EntityTypeShape EntityType="DiscoveryHunt_DBModel.Question" Width="1.5" PointX="5.375" PointY="1" />
+        <AssociationConnector Association="DiscoveryHunt_DBModel.FK_UsersResult_Questions" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>
