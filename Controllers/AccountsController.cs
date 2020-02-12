@@ -9,11 +9,15 @@ using System.Web.Http;
 using System.Net.Http;
 using System.Net;
 using System.Data.Entity;
+using DiscoveryHuntApi.Helpers;
+
 
 namespace DiscoveryHuntApi.Controllers
 {
     public class AccountsController : ApiController
     {
+        
+
         [HttpPost]
         [Route("Registration")]
         public async Task<HttpResponseMessage> Registration(Register regUser)
@@ -138,5 +142,61 @@ namespace DiscoveryHuntApi.Controllers
                 throw ex;
             }
         }
+
+
+        [HttpPost]
+        [Route("ForgetPassword")]
+        public async Task<HttpResponseMessage> ForgotPassword(string UserName)
+        {
+
+            using (var context = new DiscoveryHunt_DBEntities())
+            {
+                //check user existance
+                var user = (from s in context.Users where s.Username == UserName select s).FirstOrDefault();
+            if (user == null)
+            {
+                    return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "User Does not Exsist");
+                }
+            else
+            {
+                    
+
+                    //generate password token
+                    var user_id = user.UserId;
+                    DAL.User userd = context.Users.Where(a => a.UserId == user.UserId).FirstOrDefault();
+                    userd.PasswordResetToken = Guid.NewGuid().ToString();
+                    userd.TimeStamp = DateTime.UtcNow;
+                    context.Entry(userd).State = EntityState.Modified;
+                    context.SaveChanges();
+                    //create url with above token
+                    // var resetLink = "<a href='" + Url.Action("ResetPassword", "Account", new { un = UserName, rt = token }, "http") + "'>Reset Password</a>";
+                    var resetLink = this.Url.Link("Default", new { Controller = "Account", Action = "ResetPassword", un = user_id, rt = userd.PasswordResetToken });
+
+                    //get user emailid
+
+                    var emailid = (from i in context.Users
+                               where i.Username == UserName
+                               select i.Email).FirstOrDefault();
+                //send mail
+                string subject = "Password Reset Token";
+                string body = "<b>Please find the Password Reset Token</b><br/>" + resetLink; //edit it
+                try
+                {
+                        Mail.SendEMail(emailid, subject, body);
+                           
+                }
+                catch (Exception ex)
+                {
+                        return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "Something Went Wrong");
+                    }
+                //only for testing
+                
+            }
+        }
+            return Request.CreateResponse(HttpStatusCode.OK, "query");
+
+        }
+
+
     }
 }

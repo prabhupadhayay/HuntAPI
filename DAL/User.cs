@@ -24,9 +24,11 @@ namespace DiscoveryHuntApi.DAL
         public string Username { get; set; }
         public string Email { get; set; }
         public string Password { get; set; }
-        public System.DateTime CreatedDate { get; set; }
+        public Nullable<System.DateTime> CreatedDate { get; set; }
         public Nullable<System.DateTime> UpdatedDate { get; set; }
         public string PasswordSalt { get; set; }
+        public string PasswordResetToken { get; set; }
+        public Nullable<System.DateTime> TimeStamp { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<UsersResult> UsersResults { get; set; }
