@@ -37,7 +37,7 @@ namespace DiscoveryHuntApi.Controllers
                 bool any = (from j in context.Users
                             where (j.UserId == userid)
                             && (j.PasswordResetToken == rt)
-                            &&(j.TimeStamp < expiration)
+                           
                             //&& (j.PasswordVerificationTokenExpirationDate < DateTime.Now)
                             select j).Any();
 

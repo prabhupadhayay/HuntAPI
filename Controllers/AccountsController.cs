@@ -10,7 +10,7 @@ using System.Net.Http;
 using System.Net;
 using System.Data.Entity;
 using DiscoveryHuntApi.Helpers;
-
+using System.Configuration;
 
 namespace DiscoveryHuntApi.Controllers
 {
@@ -159,8 +159,8 @@ namespace DiscoveryHuntApi.Controllers
                 }
             else
             {
-                    
 
+                    var Url = ConfigurationManager.AppSettings["localUrl"];
                     //generate password token
                     var user_id = user.UserId;
                     DAL.User userd = context.Users.Where(a => a.UserId == user.UserId).FirstOrDefault();
@@ -170,8 +170,8 @@ namespace DiscoveryHuntApi.Controllers
                     context.SaveChanges();
                     //create url with above token
                     // var resetLink = "<a href='" + Url.Action("ResetPassword", "Account", new { un = UserName, rt = token }, "http") + "'>Reset Password</a>";
-                    var resetLink = this.Url.Link("Default", new { Controller = "Account", Action = "ResetPassword", un = user_id, rt = userd.PasswordResetToken });
-
+                   // var resetLink = this.Url.Link("Default", new { Controller = "Account", Action = "ResetPassword", un = user_id, rt = userd.PasswordResetToken });
+                    string resetLink = Url+"ResetPassword?un=" + user_id + "&rt=" + userd.PasswordResetToken;
                     //get user emailid
 
                     var emailid = (from i in context.Users
@@ -196,6 +196,86 @@ namespace DiscoveryHuntApi.Controllers
             return Request.CreateResponse(HttpStatusCode.OK, "query");
 
         }
+
+        [HttpGet]
+        [Route("ResetPassword")]
+        public async Task<HttpResponseMessage> ResetPassword(int un, string rt)
+        {
+            using (var context = new DiscoveryHunt_DBEntities())
+            {
+                // UsersContext db = new UsersContext();
+
+                //TODO: Check the un and rt matching and then perform following
+                //get userid of received username
+                var userid = (from i in context.Users
+                              where i.UserId == un
+                              select i.UserId).FirstOrDefault();
+                //check userid and token matches
+                var users_detail = context.Users.Where(a => a.UserId == userid).FirstOrDefault();
+                DateTime expiration = (DateTime)users_detail.TimeStamp;
+                DateTime expiration1 = expiration.AddMinutes(20);
+                DateTime currentTime = DateTime.UtcNow;
+                if (expiration1 < currentTime)
+                {
+                    return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "Your Link has been Expired");
+                }
+
+                bool any = (from j in context.Users
+                            where (j.UserId == userid)
+                            && (j.PasswordResetToken == rt)
+                           
+                            //&& (j.PasswordVerificationTokenExpirationDate < DateTime.Now)
+                            select j).Any();
+
+                if (any == true)
+                {
+                    //generate random password
+                    string key = Helper.Helper.GeneratePassword(50);
+                    string randomPassword = Helper.Helper.GeneratePassword(8);
+                    var password = Helper.Helper.EncodePassword(randomPassword, key);
+                    DAL.User userd = context.Users.Where(a => a.UserId == userid).FirstOrDefault();
+                    userd.Password = password;
+                    userd.PasswordSalt = key;
+                    userd.UpdatedDate = DateTime.UtcNow;
+                    context.Entry(userd).State = EntityState.Modified;
+                    context.SaveChanges();
+                    //reset password
+                    var response = randomPassword;
+                    if (response != null)
+                    {
+                        //get user emailid to send password
+                        var emailid = (from i in context.Users
+                                       where i.UserId == un
+                                       select i.Email).FirstOrDefault();
+                        //send email
+                        string subject = "New Password";
+                        string body = "<b>Please find the New Password</b><br/>" + randomPassword; //edit it
+                        try
+                        {
+                            Mail.SendEMail(emailid, subject, body);
+
+                        }
+                        catch (Exception ex)
+                        {
+                            throw ex;
+                        }
+
+                        //display message
+
+                    }
+                    else
+                    {
+                        return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "Something Went Wrong");
+                    }
+                }
+                else
+                {
+                    return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "Something Went Wrong");
+                }
+            }
+            return Request.CreateResponse(HttpStatusCode.OK, "Password has been Sent to your Registered Email");
+        }
+
 
 
     }
