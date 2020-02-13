@@ -9,7 +9,8 @@
           <Key>
             <PropertyRef Name="QuestionId" />
           </Key>
-          <Property Name="QuestionId" Type="int" Nullable="false" />
+          <Property Name="QuestionId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="TrailId" Type="int" Nullable="false" />
           <Property Name="QuestionName" Type="varchar" MaxLength="50" />
           <Property Name="OptionA" Type="varchar" MaxLength="50" />
           <Property Name="OptionB" Type="varchar" MaxLength="50" />
@@ -17,12 +18,14 @@
           <Property Name="OptionD" Type="varchar" MaxLength="50" />
           <Property Name="CorrectAnswer" Type="varchar" MaxLength="50" />
           <Property Name="IsDeleted" Type="int" />
+          <Property Name="CreatedAt" Type="datetime" />
+          <Property Name="UpdatedAt" Type="datetime" />
         </EntityType>
         <EntityType Name="Transaction">
           <Key>
             <PropertyRef Name="transactionId" />
           </Key>
-          <Property Name="transactionId" Type="int" Nullable="false" />
+          <Property Name="transactionId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="UserId" Type="bigint" Nullable="false" />
           <Property Name="TrialId" Type="int" Nullable="false" />
           <Property Name="Amount" Type="int" />
@@ -33,7 +36,8 @@
           <Key>
             <PropertyRef Name="TrialId" />
           </Key>
-          <Property Name="TrialId" Type="int" Nullable="false" />
+          <Property Name="TrialId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="TrailName" Type="varchar" MaxLength="50" />
           <Property Name="Country" Type="varchar" MaxLength="50" />
           <Property Name="City" Type="varchar" MaxLength="50" />
           <Property Name="CreatedDate" Type="datetime" />
@@ -69,7 +73,7 @@
           <Key>
             <PropertyRef Name="ResultId" />
           </Key>
-          <Property Name="ResultId" Type="int" Nullable="false" />
+          <Property Name="ResultId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="QuestionAttempt" Type="int" />
           <Property Name="QuestionId" Type="int" Nullable="false" />
           <Property Name="UserId" Type="bigint" Nullable="false" />
@@ -80,7 +84,7 @@
           <Key>
             <PropertyRef Name="UserTrialStatusId" />
           </Key>
-          <Property Name="UserTrialStatusId" Type="int" Nullable="false" />
+          <Property Name="UserTrialStatusId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="TrialId" Type="int" Nullable="false" />
           <Property Name="UserId" Type="bigint" Nullable="false" />
           <Property Name="ProgressLevel" Type="decimal" Precision="18" Scale="0" />
@@ -90,6 +94,18 @@
           <Property Name="PauseTime" Type="time" Precision="7" />
           <Property Name="Penalty" Type="time" Precision="7" />
         </EntityType>
+        <Association Name="FK_Questions_Trial">
+          <End Role="Trial" Type="Self.Trial" Multiplicity="1" />
+          <End Role="Questions" Type="Self.Questions" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Trial">
+              <PropertyRef Name="TrialId" />
+            </Principal>
+            <Dependent Role="Questions">
+              <PropertyRef Name="TrailId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_Transaction_Trial">
           <End Role="Trial" Type="Self.Trial" Multiplicity="1" />
           <End Role="Transaction" Type="Self.Transaction" Multiplicity="*" />
@@ -135,18 +151,6 @@
             </Principal>
             <Dependent Role="UserProfile">
               <PropertyRef Name="UserId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_UsersResult_Questions">
-          <End Role="Questions" Type="Self.Questions" Multiplicity="1" />
-          <End Role="UsersResult" Type="Self.UsersResult" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Questions">
-              <PropertyRef Name="QuestionId" />
-            </Principal>
-            <Dependent Role="UsersResult">
-              <PropertyRef Name="QuestionId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -230,6 +234,10 @@
           <EntitySet Name="UserProfile" EntityType="Self.UserProfile" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="UsersResult" EntityType="Self.UsersResult" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="UserTrialStatus" EntityType="Self.UserTrialStatus" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_Questions_Trial" Association="Self.FK_Questions_Trial">
+            <End Role="Trial" EntitySet="Trial" />
+            <End Role="Questions" EntitySet="Questions" />
+          </AssociationSet>
           <AssociationSet Name="FK_Transaction_Trial" Association="Self.FK_Transaction_Trial">
             <End Role="Trial" EntitySet="Trial" />
             <End Role="Transaction" EntitySet="Transaction" />
@@ -245,10 +253,6 @@
           <AssociationSet Name="FK_UserProfile_User" Association="Self.FK_UserProfile_User">
             <End Role="User" EntitySet="User" />
             <End Role="UserProfile" EntitySet="UserProfile" />
-          </AssociationSet>
-          <AssociationSet Name="FK_UsersResult_Questions" Association="Self.FK_UsersResult_Questions">
-            <End Role="Questions" EntitySet="Questions" />
-            <End Role="UsersResult" EntitySet="UsersResult" />
           </AssociationSet>
           <AssociationSet Name="FK_UsersResult_Trial" Association="Self.FK_UsersResult_Trial">
             <End Role="Trial" EntitySet="Trial" />
@@ -307,6 +311,8 @@
           <NavigationProperty Name="UsersResults" Relationship="Self.FK_UsersResult_Trial" FromRole="Trial" ToRole="UsersResult" />
           <NavigationProperty Name="UsersResults1" Relationship="Self.FK_UsersResult_Trial1" FromRole="Trial" ToRole="UsersResult" />
           <NavigationProperty Name="UserTrialStatus" Relationship="Self.FK_UserTrialStatus_UserTrialStatus" FromRole="Trial" ToRole="UserTrialStatus" />
+          <Property Name="TrailName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="Questions" Relationship="DiscoveryHunt_DBModel.FK_Questions_Trial" FromRole="Trial" ToRole="Question" />
         </EntityType>
         <EntityType Name="User">
           <Key>
@@ -480,6 +486,10 @@
             <End Role="Question" EntitySet="Questions" />
             <End Role="UsersResult" EntitySet="UsersResults" />
           </AssociationSet>
+          <AssociationSet Name="FK_Questions_Trial" Association="DiscoveryHunt_DBModel.FK_Questions_Trial">
+            <End Role="Trial" EntitySet="Trials" />
+            <End Role="Question" EntitySet="Questions" />
+          </AssociationSet>
           </EntityContainer>
         <EntityType Name="UserProfile">
           <Key>
@@ -558,6 +568,10 @@
           <Property Name="CorrectAnswer" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="IsDeleted" Type="Int32" />
           <NavigationProperty Name="UsersResults" Relationship="DiscoveryHunt_DBModel.FK_UsersResult_Questions" FromRole="Question" ToRole="UsersResult" />
+          <Property Name="TrailId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Trial" Relationship="DiscoveryHunt_DBModel.FK_Questions_Trial" FromRole="Question" ToRole="Trial" />
+          <Property Name="CreatedAt" Type="DateTime" Precision="3" />
+          <Property Name="UpdatedAt" Type="DateTime" Precision="3" />
         </EntityType>
         <Association Name="FK_UsersResult_Questions">
           <End Type="DiscoveryHunt_DBModel.Question" Role="Question" Multiplicity="1" />
@@ -568,6 +582,18 @@
             </Principal>
             <Dependent Role="UsersResult">
               <PropertyRef Name="QuestionId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Questions_Trial">
+          <End Type="DiscoveryHunt_DBModel.Trial" Role="Trial" Multiplicity="1" />
+          <End Type="DiscoveryHunt_DBModel.Question" Role="Question" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Trial">
+              <PropertyRef Name="TrialId" />
+            </Principal>
+            <Dependent Role="Question">
+              <PropertyRef Name="TrailId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -592,6 +618,7 @@
           <EntitySetMapping Name="Trials">
             <EntityTypeMapping TypeName="DiscoveryHunt_DBModel.Trial">
               <MappingFragment StoreEntitySet="Trial">
+                <ScalarProperty Name="TrailName" ColumnName="TrailName" />
                 <ScalarProperty Name="TrialId" ColumnName="TrialId" />
                 <ScalarProperty Name="Country" ColumnName="Country" />
                 <ScalarProperty Name="City" ColumnName="City" />
@@ -658,6 +685,9 @@
           <EntitySetMapping Name="Questions">
             <EntityTypeMapping TypeName="DiscoveryHunt_DBModel.Question">
               <MappingFragment StoreEntitySet="Questions">
+                <ScalarProperty Name="UpdatedAt" ColumnName="UpdatedAt" />
+                <ScalarProperty Name="CreatedAt" ColumnName="CreatedAt" />
+                <ScalarProperty Name="TrailId" ColumnName="TrailId" />
                 <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
                 <ScalarProperty Name="CorrectAnswer" ColumnName="CorrectAnswer" />
                 <ScalarProperty Name="OptionD" ColumnName="OptionD" />

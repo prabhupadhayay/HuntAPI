@@ -28,8 +28,12 @@ namespace DiscoveryHuntApi.DAL
         public string OptionD { get; set; }
         public string CorrectAnswer { get; set; }
         public Nullable<int> IsDeleted { get; set; }
+        public int TrailId { get; set; }
+        public Nullable<System.DateTime> CreatedAt { get; set; }
+        public Nullable<System.DateTime> UpdatedAt { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<UsersResult> UsersResults { get; set; }
+        public virtual Trial Trial { get; set; }
     }
 }

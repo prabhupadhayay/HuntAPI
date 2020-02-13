@@ -75,7 +75,6 @@ namespace DiscoveryHuntApi.Models
 
     }
 
-
     public class UpdateUserProfile
     {
         

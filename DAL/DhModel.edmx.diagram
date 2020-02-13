@@ -23,6 +23,7 @@
         <AssociationConnector Association="DiscoveryHunt_DBModel.FK_UserTrialStatus_UserProfile" />
         <EntityTypeShape EntityType="DiscoveryHunt_DBModel.Question" Width="1.5" PointX="5.375" PointY="1" />
         <AssociationConnector Association="DiscoveryHunt_DBModel.FK_UsersResult_Questions" />
+        <AssociationConnector Association="DiscoveryHunt_DBModel.FK_Questions_Trial" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

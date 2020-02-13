@@ -87,6 +87,7 @@ namespace DiscoveryHuntApi.Controllers
             }
 
         }
+
         [HttpPost]
         [Route("Login")]
         public async Task<HttpResponseMessage> Login(string userName, string password)
@@ -142,7 +143,6 @@ namespace DiscoveryHuntApi.Controllers
                 throw ex;
             }
         }
-
 
         [HttpPost]
         [Route("ForgetPassword")]

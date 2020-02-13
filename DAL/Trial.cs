@@ -22,6 +22,7 @@ namespace DiscoveryHuntApi.DAL
             this.UsersResults = new HashSet<UsersResult>();
             this.UsersResults1 = new HashSet<UsersResult>();
             this.UserTrialStatus = new HashSet<UserTrialStatu>();
+            this.Questions = new HashSet<Question>();
         }
     
         public int TrialId { get; set; }
@@ -29,6 +30,7 @@ namespace DiscoveryHuntApi.DAL
         public string City { get; set; }
         public Nullable<System.DateTime> CreatedDate { get; set; }
         public Nullable<System.DateTime> UpdatedDate { get; set; }
+        public string TrailName { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Transaction> Transactions { get; set; }
@@ -40,5 +42,7 @@ namespace DiscoveryHuntApi.DAL
         public virtual ICollection<UsersResult> UsersResults1 { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<UserTrialStatu> UserTrialStatus { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Question> Questions { get; set; }
     }
 }
