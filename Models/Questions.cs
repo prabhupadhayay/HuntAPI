@@ -57,4 +57,9 @@ namespace DiscoveryHuntApi.Models
         public string CorrectAnswer { get; set; }
         public int Status { get; set; }
     }
+
+    public class GetTrailByIdModel
+    {
+        public int? trailId { get; set; }
+    }
 }

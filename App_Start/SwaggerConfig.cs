@@ -1,9 +1,9 @@
 using System.Web.Http;
-using WebActivatorEx;
 using DiscoveryHuntApi;
 using Swashbuckle.Application;
+using DiscoveryHuntApi.SwaggerConfiguration;
 
-[assembly: PreApplicationStartMethod(typeof(SwaggerConfig), "Register")]
+[assembly: System.Web.PreApplicationStartMethod(typeof(SwaggerConfig), "Register")]
 
 namespace DiscoveryHuntApi
 {
@@ -33,7 +33,8 @@ namespace DiscoveryHuntApi
                         // additional fields by chaining methods off SingleApiVersion.
                         //
                         c.SingleApiVersion("v1", "DiscoveryHuntApi");
-
+                        c.OperationFilter<ParameterFilter>();
+                        c.OperationFilter<SwaggerParameterOperationFilter>();
                         // If you want the output Swagger docs to be indented properly, enable the "PrettyPrint" option.
                         //
                         //c.PrettyPrint();
@@ -61,7 +62,7 @@ namespace DiscoveryHuntApi
                         //c.BasicAuth("basic")
                         //    .Description("Basic HTTP Authentication");
                         //
-						// NOTE: You must also configure 'EnableApiKeySupport' below in the SwaggerUI section
+                        // NOTE: You must also configure 'EnableApiKeySupport' below in the SwaggerUI section
                         //c.ApiKey("apiKey")
                         //    .Description("API Key Authentication")
                         //    .Name("apiKey")

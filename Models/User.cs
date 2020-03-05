@@ -87,4 +87,14 @@ namespace DiscoveryHuntApi.Models
         public DateTime UpdatedDate { get; set; }
         public string ProfilePictureUrl { get; set; }
     }
+
+    public class ProfileImageModel
+    {
+        public int UserId { get; set; }
+    }
+
+    public class UserProfileRequestParam
+    {
+        public int? userid { get; set; }
+    }
 }

@@ -14,12 +14,28 @@ namespace DiscoveryHuntApi.Controllers
     public class TrailController : ApiController
     {
         DiscoveryHunt_DBEntities discoveryHunt_DBEntities = new DiscoveryHunt_DBEntities();
+
+
         [System.Web.Http.HttpGet]
         [Route("GetTrails")]
-        public IEnumerable<Models.Trail> Get()
+        public async Task<HttpResponseMessage> Get([FromUri]GetTrailByIdModel param)
         {
             try
             {
+                if (param != null)
+                {
+                    if (param.trailId.HasValue)
+                    {
+                        Models.Trail trail = new Models.Trail();
+                        var singletrailData = discoveryHunt_DBEntities.Trials.Where(a => a.TrialId == param.trailId).SingleOrDefault();
+                        trail.City = singletrailData.City;
+                        trail.Country = singletrailData.Country;
+                        trail.TrailName = singletrailData.TrailName;
+                        trail.TrailId = singletrailData.TrialId;
+                        return Request.CreateResponse(HttpStatusCode.OK, trail);
+                    }
+                }
+
                 List<Models.Trail> trailList = new List<Models.Trail>();
                 var TrailData = discoveryHunt_DBEntities.Trials;
                 foreach (var data in TrailData)
@@ -31,7 +47,8 @@ namespace DiscoveryHuntApi.Controllers
                     trail.TrailId = data.TrialId;
                     trailList.Add(trail);
                  }
-                return trailList;
+                return Request.CreateResponse(HttpStatusCode.OK, trailList);
+               
             }
             catch (Exception ex)
             {
@@ -84,6 +101,7 @@ namespace DiscoveryHuntApi.Controllers
             }
           
         }
+
         [System.Web.Http.HttpPut]
         [Route("UpdateTrail")]
         public async Task<HttpResponseMessage> UpdateTrail(Trail trail)
